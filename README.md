@@ -39,15 +39,15 @@ import tidybear as tb
 with tb.GroupBy(df, "gr") as g:
     
     # built in statistcs
-    tb.Stats.size()
-    tb.Stats.agg(["sum", "mean", "median"], "val", decimals=3)
+    tb.Stat.size()
+    tb.Stat.agg(["sum", "mean", "median"], "val", decimals=3)
     
     # custom stats
     tb.Stat("n_distinct_val", g.val.apply(lambda x: len(x.unique())))
     
     # use 'temp' keyword to return series and use it later
-    max_val = tb.Stats.max("val", temp=True)
-    min_val = tb.Stats.min("val", temp=True)
+    max_val = tb.Stat.max("val", temp=True)
+    min_val = tb.Stat.min("val", temp=True)
     tb.Stat("midpoint", (max_val + min_val) / 2)
     
     summary = g.summarise()
