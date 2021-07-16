@@ -1,3 +1,4 @@
 
 # Groupby and summarize API
-from tidybear.tidygroup import (GroupBy, Stat)
+from tidybear.groupby import GroupBy
+from tidybear.stat import Stat
