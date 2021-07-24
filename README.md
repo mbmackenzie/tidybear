@@ -10,53 +10,39 @@ Take the dataframe
 import numpy as np
 import pandas as pd
 
+import tidybear as tb
+
 df = pd.DataFrame({
     "gr": list("AAABBBB"),
-    "val": [1, 2, 3, 7, 8, 8, 9]
+    "x": [1, 2, 3, 7, 8, 8, 9],
+    "y": [4, 5, 6, 1, 1, 1, 1],
+    "z": [2, 4, 6, 0, 1, 2, 2]
 })
-```
-
-To summarise this you could do something like this...
-
-```python
-g = df.groupby("gr")
-
-summary = pd.concat([
-    g.size().rename("n"),
-    g.val.sum().rename("sum_val"),
-    g.val.mean().round(3).rename("mean_val"),
-    g.val.median().rename("median_val"),
-    g.val.apply(lambda x: len(x.unique())).rename("n_distinct_val"),
-    ((g.val.max() + g.val.min()) / 2).rename("midpoint")
-], axis=1)
-```
-
-Or you could do this...
-
-```python
-import tidybear as tb
 
 with tb.GroupBy(df, "gr") as g:
     
     # built in statistcs
-    tb.Stat.size()
-    tb.Stat.agg(["sum", "mean", "median"], "val", decimals=3)
+    g.n()
+    g.sum("x", decimals=3)
     
-    # custom stats
-    tb.Stat("n_distinct_val", g.val.apply(lambda x: len(x.unique())))
+    # multiple aggs to a single column
+    g.agg("x", ["mean", "median"], decimals=3)
     
-    # use 'temp' keyword to return series and use it later
-    max_val = tb.Stat.max("val", temp=True)
-    min_val = tb.Stat.min("val", temp=True)
-    tb.Stat("midpoint", (max_val + min_val) / 2)
+    # same agg across multiple columns using built in
+    g.mean(["y", "z"], decimals=3)
+    
+    # multiple aggs across multiple columns
+    g.agg(["y", "z"], ["median", "std"], decimals=1)
+    
+    # send a lambda function to agg
+    g.agg("x", lambda x: len(x.unique()), name="n_distinct_x1")
+    
+    # Use 'temp' keyword to return series and use it later
+    max_val = g.max("x", temp=True)
+    min_val = g.min("x", temp=True)
+    
+    # create a custom stat directly
+    g.stat("midpoint", (max_val + min_val) / 2)
     
     summary = g.summarise()
 ```
-
-In both cases, `summary` would be the following dataframe:
-
-
-| gr | n | sum_val | mean_val | median_val | n_distinct_val | midpoint |
-|:---|--:|--------:|---------:|-----------:|---------------:|---------:|
-| A  | 3 |       6 |        2 |          2 |              3 |        2 |
-| B  | 4 |      32 |        8 |          8 |              3 |        8 |

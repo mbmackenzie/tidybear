@@ -12,6 +12,7 @@ setup(
     version='0.0.1',
     description='A tidy approach to pandas',
     long_description=readme,
+    long_description_content_type="text/markdown",
     author='Matt Mackenzie',
     author_email='mbm2228@columbia.edu',
     url='https://github.com/mbmackenzie/tidybear',
@@ -22,7 +23,6 @@ setup(
     packages=find_packages(exclude=('tests', 'docs')),
     classifiers=[
         'Development Status :: 3 - Alpha',
-        'Intended Audience :: Data Scientists',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3.9',
     ]
