@@ -21,16 +21,16 @@ with tb.GroupBy(df, "gr") as g:
     
     # built in statistcs
     g.n()
-    g.sum("x", decimals=3)
+    g.sum("x")
     
     # multiple aggs to a single column
-    g.agg("x", ["mean", "median"], decimals=3)
+    g.agg("x", ["mean", "median"])
     
     # same agg across multiple columns using built in
-    g.mean(["y", "z"], decimals=3)
+    g.mean(["y", "z"])
     
     # multiple aggs across multiple columns
-    g.agg(["y", "z"], ["median", "std"], decimals=1)
+    g.agg(["y", "z"], ["median", "std"])
     
     # send a lambda function to agg
     g.agg("x", lambda x: len(x.unique()), name="n_distinct_x1")
@@ -42,5 +42,5 @@ with tb.GroupBy(df, "gr") as g:
     # create a custom stat directly
     g.stat("midpoint", (max_val + min_val) / 2)
     
-    summary = g.summarise()
+    summary = g.summarise() # or g.summarize()
 ```
