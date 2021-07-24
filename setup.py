@@ -10,17 +10,14 @@ with open('LICENSE') as f:
 setup(
     name='tidybear',
     version='0.0.2',
-    description='A tidy approach to pandas',
+    description='A tidier approach to pandas.',
     long_description=readme,
     long_description_content_type="text/markdown",
     author='Matt Mackenzie',
     author_email='mbm2228@columbia.edu',
     url='https://github.com/mbmackenzie/tidybear',
     license=license,
-    install_requires=[
-        "pandas"
-    ],
-    packages=find_packages(exclude=('tests', 'docs', 'examples')),
+    packages=find_packages(exclude=('tests', 'docs')),
     classifiers=[
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: MIT License',

@@ -1,6 +1,6 @@
 # TidyBear
 
-A tidy approach to pandas.
+A tidier approach to pandas.
 
 ## Groupby and Summarise
 
