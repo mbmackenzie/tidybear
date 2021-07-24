@@ -9,7 +9,7 @@ with open('LICENSE') as f:
 
 setup(
     name='tidybear',
-    version='0.0.1',
+    version='0.0.2',
     description='A tidy approach to pandas',
     long_description=readme,
     long_description_content_type="text/markdown",
@@ -20,7 +20,7 @@ setup(
     install_requires=[
         "pandas"
     ],
-    packages=find_packages(exclude=('tests', 'docs')),
+    packages=find_packages(exclude=('tests', 'docs', 'examples')),
     classifiers=[
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: MIT License',
