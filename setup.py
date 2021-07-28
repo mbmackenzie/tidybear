@@ -9,7 +9,7 @@ with open('LICENSE') as f:
 
 setup(
     name='tidybear',
-    version='0.0.2',
+    version='0.0.3',
     description='A tidier approach to pandas.',
     long_description=readme,
     long_description_content_type="text/markdown",
