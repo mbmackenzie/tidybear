@@ -26,7 +26,7 @@ df = pd.DataFrame({
 # Count by group
 tb.count(df, "gr")
 
-# Top n rows ordered by some row
+# Top n rows ordered by some column
 tb.top_n(df, order_by="x", n=3)
 
 # rename columns more quickly
