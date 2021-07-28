@@ -2,7 +2,9 @@
 
 A tidier approach to pandas.
 
-## Groupby and Summarise
+___
+
+## Examples
 
 ```python
 import numpy as np
@@ -16,7 +18,24 @@ df = pd.DataFrame({
     "y": [4, 5, 6, 1, 1, 1, 1],
     "z": [2, 4, 6, 0, 1, 2, 2]
 })
+```
 
+## Functions
+
+```python
+# Count by group
+tb.count(df, "gr")
+
+# Top n rows ordered by some row
+tb.top_n(df, order_by="x", n=3)
+
+# rename columns more quickly
+tb.rename(df, x="a")
+```
+
+## Groupby and Summarise
+
+```python
 with tb.GroupBy(df, "gr") as g:
     
     # built in statistcs

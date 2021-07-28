@@ -17,6 +17,9 @@ def data():
     })
     return df
 
+def test_canary():
+    pass
+
 def test_groupby_same_series(data):
     """You should be able to access all the columns of your dataframed that are not grouped"""
     pd_g = data.groupby("A")
