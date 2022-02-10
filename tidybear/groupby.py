@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pandas as pd
 from typing import List, Union
 
@@ -45,9 +47,9 @@ class GroupBy:
     A   3
     B   4
     ```
-    """    
+    """
 
-    def __init__(self, df: pd.DataFrame, groups):
+    def __init__(self, df: pd.DataFrame, groups: list[str] | str):
         """Creates an active grouping that can track and summarise provided Stats. Must be used within a with statement.
         
         Parameters
@@ -56,7 +58,7 @@ class GroupBy:
             The dataframe to group.
         groups : str, List[str]
             Used to determine the groups for the groupby
-        """        
+        """
         self.__groups = groups
         self.__groupby_obj = df.groupby(groups)
 
@@ -64,10 +66,10 @@ class GroupBy:
 
     def __enter__(self):
         return self
-        
+
     def __exit__(self, *args):
         self.__stats = []
-    
+
     @property
     def groups(self) -> Union[str, List[str]]:
         """Get the grouping variables
@@ -75,7 +77,7 @@ class GroupBy:
         Returns
         -------
         str, List[str]
-        """        
+        """
         return self.__groups
 
     def get(self, column: str) -> pd.Series:
@@ -90,7 +92,7 @@ class GroupBy:
         -------
         pd.Series
             The grouped column
-        """        
+        """
         return self.__groupby_obj[column]
 
     def summarise(self) -> pd.DataFrame:
@@ -105,7 +107,7 @@ class GroupBy:
         -------
         pd.DataFrame
             Final summary of all stats
-        """        
+        """
         return pd.concat(self.__stats, axis=1)
 
     def summarize(self) -> pd.DataFrame:
@@ -120,7 +122,7 @@ class GroupBy:
         -------
         pd.DataFrame
             Final summary of all stats
-        """        
+        """
         return self.summarise()
 
     def __add_stat(self, name: str, series: pd.Series, temp: bool = False):
@@ -133,15 +135,15 @@ class GroupBy:
         return self.__add_stat(name, series)
 
     def n(self, name: str = None) -> pd.Series:
-        """Compute group sizes."""        
+        """Compute group sizes."""
         name = "n" if not name else name
         return self.__add_stat(name, self.__groupby_obj.size())
 
     def agg(self,
             column: str,
-            func, 
-            decimals: int = None, 
-            name: str = None, 
+            func,
+            decimals: int = None,
+            name: str = None,
             name_prefix: str = None,
             temp: bool = False):
         """Aggregate one or more columns using one or more operations.
@@ -168,8 +170,8 @@ class GroupBy:
         Returns
         -------
         Series or NoneType
-        """            
-        
+        """
+
         if isinstance(func, list):
             for f in func:
                 self.agg(column, f, decimals=decimals)
@@ -183,7 +185,7 @@ class GroupBy:
         if not name:
             if isinstance(func, str):
                 name = func + "_" + column
-            elif name_prefix: 
+            elif name_prefix:
                 name = name_prefix + "_" + column
             else:
                 name = column
@@ -192,41 +194,41 @@ class GroupBy:
 
         if decimals:
             agg = agg.round(decimals)
-        
+
         return self.__add_stat(name, agg, temp=temp)
 
     def n_distinct(self, column: str, **kwargs):
         """Compute number of unique values in group."""
         if "name_prefix" not in kwargs:
             kwargs["name_prefix"] = "n_distinct"
-        return self.agg(column, lambda x: len(x.unique()), **kwargs) 
+        return self.agg(column, lambda x: len(x.unique()), **kwargs)
 
     def sum(self, column: str, **kwargs):
-        """Compute sum of group values."""        
+        """Compute sum of group values."""
         return self.agg(column, "sum", **kwargs)
 
     def mean(self, column: str, **kwargs):
-        """Compute mean of group values."""     
+        """Compute mean of group values."""
         return self.agg(column, "mean", **kwargs)
 
     def median(self, column: str, **kwargs):
-        """Compute median of group values."""  
+        """Compute median of group values."""
         return self.agg(column, "median", **kwargs)
 
     def max(self, column: str, **kwargs):
-        """Compute max of group values."""  
+        """Compute max of group values."""
         return self.agg(column, "max", **kwargs)
 
     def min(self, column: str, **kwargs):
-        """Compute min of group values."""  
+        """Compute min of group values."""
         return self.agg(column, "min", **kwargs)
 
     def var(self, column: str, **kwargs):
-        """Compute variance of group values."""  
+        """Compute variance of group values."""
         return self.agg(column, "var", **kwargs)
 
     def std(self, column: str, **kwargs):
-        """Compute standard deviation of group values."""  
+        """Compute standard deviation of group values."""
         return self.agg(column, "std", **kwargs)
 
     def __str__(self):

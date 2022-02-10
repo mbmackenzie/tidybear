@@ -1,9 +1,5 @@
-# DF Functions
-from tidybear.df_functions import (
-    count, 
-    top_n, 
-    rename
-)
+# DF Verbs
+from tidybear.verbs import *
 
 # Groupby and summarize API
 from tidybear.groupby import GroupBy
