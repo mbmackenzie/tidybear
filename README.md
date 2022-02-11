@@ -6,7 +6,7 @@ This package is a collection of functions, routines, and processes that I freque
 
 ## Examples
 
-- Verbs: examples/verbs.ipynb
+- [Verbs](examples/verbs.ipynb)
 
 ## Groupby and Summarise
 
