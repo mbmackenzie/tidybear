@@ -1,20 +1,37 @@
 from __future__ import annotations
 
+from typing import List
+from typing import Union
+
 from pandas import DataFrame
 
 
-def _slice(df: DataFrame, order_by: str, n: int, ascending: bool, groupby: list[str] | str = None):
+def _slice(
+    df: DataFrame,
+    order_by: str,
+    n: int,
+    ascending: bool,
+    groupby: Union[str, List[str], None] = None,
+) -> DataFrame:
     df = df.copy()
 
     if groupby:
-        return df.groupby(groupby) \
-            .apply(lambda x: _slice(x, order_by, n, ascending)) \
+        return (
+            df.groupby(groupby)
+            .apply(lambda x: _slice(x, order_by, n, ascending))
             .reset_index(drop=True)
+        )
 
     return df.sort_values(order_by, ascending=ascending).head(n)
 
 
-def slice_max(df: DataFrame, order_by: str, n: int, groupby: str = None):
+def slice_max(
+    df: DataFrame,
+    *,
+    order_by: str,
+    n: int,
+    groupby: Union[str, List[str], None] = None,
+) -> DataFrame:
     """Get the top N elements of a dataframe of group.
 
     Parameters
@@ -34,7 +51,13 @@ def slice_max(df: DataFrame, order_by: str, n: int, groupby: str = None):
     return _slice(df, order_by, n, False, groupby)
 
 
-def slice_min(df: DataFrame, order_by: str, n: int, groupby: str = None):
+def slice_min(
+    df: DataFrame,
+    *,
+    order_by: str,
+    n: int,
+    groupby: Union[str, List[str], None] = None,
+) -> DataFrame:
     """Get the bottom N elements of a dataframe of group.
 
     Parameters
