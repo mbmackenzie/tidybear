@@ -2,11 +2,11 @@
 
 A tidier approach to pandas.
 
----
+This package is a collection of functions, routines, and processes that I frequently use, challanged myself to implement, or find particularly nice to write in a certain way. I hope they can be useful to you.
 
 ## Examples
 
-- Verbs: see examples/verbs.ipynb
+- Verbs: examples/verbs.ipynb
 
 ## Groupby and Summarise
 
