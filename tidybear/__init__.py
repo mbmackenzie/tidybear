@@ -4,6 +4,7 @@ from tidybear.verbs.mutate import mutate
 from tidybear.verbs.pivot import pivot_longer
 from tidybear.verbs.pivot import pivot_wider
 from tidybear.verbs.rename import rename
+from tidybear.verbs.select import select
 from tidybear.verbs.slice import slice_max
 from tidybear.verbs.slice import slice_min
 
@@ -16,4 +17,5 @@ __all__ = (
     "rename",
     "slice_max",
     "slice_min",
+    "select",
 )

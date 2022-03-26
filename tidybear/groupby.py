@@ -197,7 +197,7 @@ class GroupBy:
 
         agg = self.get(column).agg(func)
 
-        if decimals:
+        if decimals is not None:
             agg = agg.round(decimals)
 
         return self.__add_stat(name, agg)
