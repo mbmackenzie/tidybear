@@ -1,4 +1,5 @@
 from typing import Any
+from typing import List
 
 import pandas as pd
 from pandas import DataFrame
@@ -32,8 +33,8 @@ def join(
 
     """
 
-    left_on: list[str] = []
-    right_on: list[str] = []
+    left_on: List[str] = []
+    right_on: List[str] = []
 
     if args:
         if len(args) > 1 and any([isinstance(arg, list) for arg in args]):

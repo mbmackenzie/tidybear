@@ -1,7 +1,15 @@
+from typing import List
+from typing import Union
+
 import pandas as pd
 
+from tidybear.selectors import TidySelector
+from tidybear.utils import get_column_names
 
-def select(df: pd.DataFrame, *args: str, **kwargs: str) -> pd.DataFrame:
+
+def select(
+    df: pd.DataFrame, *args: Union[str, TidySelector], **kwargs: str
+) -> pd.DataFrame:
     """Select columns from a dataframe
 
     Parameters
@@ -38,7 +46,8 @@ def select(df: pd.DataFrame, *args: str, **kwargs: str) -> pd.DataFrame:
 
     """
 
-    to_select: list[str] = []
+    to_select: List[Union[str, TidySelector]] = []
+
     if args:
         to_select.extend(args)
 
@@ -46,7 +55,9 @@ def select(df: pd.DataFrame, *args: str, **kwargs: str) -> pd.DataFrame:
         to_select.extend(kwargs.values())
         rename_dict = {v: k for k, v in kwargs.items()}
 
-    selected = df.loc[:, to_select].copy()
+    to_select_names = get_column_names(df.columns, to_select)
+    selected = df.loc[:, to_select_names].copy()
+
     if kwargs:
         selected.rename(columns=rename_dict, inplace=True)
 
