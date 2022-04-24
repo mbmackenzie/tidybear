@@ -199,11 +199,7 @@ def num_range(prefix: str, values: Iterable[int], width: int = 0) -> TidySelecto
     """
 
     def selector(columns: Iterable[str]) -> List[str]:
-        return [
-            c
-            for i in values
-            for c in columns
-            if c.startswith(prefix) and c.endswith(str(i).zfill(width))
-        ]
+        allowed = [f"{prefix}{str(i).zfill(width)}" for i in values]
+        return [c for c in columns if c in allowed]
 
     return TidySelector(selector)

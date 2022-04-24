@@ -6,6 +6,25 @@ from tidybear import selectors
 COLUMN_NAMES = ["name", "age", "height", "weight", "eye_color", "hair_color"]
 
 
+def _selector_helper(selector, expected, pattern=None):
+    if pattern is not None:
+        return selector(pattern)(COLUMN_NAMES) == expected
+
+    return selector()(COLUMN_NAMES) == expected
+
+
+def test_everything():
+    assert _selector_helper(selectors.everything, COLUMN_NAMES)
+
+
+def test_last_col():
+    assert _selector_helper(selectors.last_col, ["hair_color"])
+
+
+def test_first_col():
+    assert _selector_helper(selectors.first_col, ["name"])
+
+
 @pytest.mark.parametrize(
     "pattern,expected",
     [
@@ -15,18 +34,61 @@ COLUMN_NAMES = ["name", "age", "height", "weight", "eye_color", "hair_color"]
     ],
 )
 def test_contains(pattern, expected):
-    selector = selectors.contains(pattern)
-    assert selector(COLUMN_NAMES) == expected
+    assert _selector_helper(selectors.contains, expected, pattern)
 
 
 @pytest.mark.parametrize(
     "pattern,expected",
     [
-        ("name", COLUMN_NAMES[1:]),
-        ("_color", COLUMN_NAMES[:-2]),
-        ("a", ["height", "weight", "eye_color"]),
+        ("(h|w)eight", ["height", "weight"]),
+        (".*", COLUMN_NAMES),
     ],
 )
-def test_contains_negate(pattern, expected):
-    selector = -selectors.contains(pattern)
-    assert selector(COLUMN_NAMES) == expected
+def test_matches(pattern, expected):
+    assert _selector_helper(selectors.matches, expected, pattern)
+
+
+@pytest.mark.parametrize(
+    "pattern,expected",
+    [
+        ("n", ["name"]),
+        ("h", ["height", "hair_color"]),
+    ],
+)
+def test_starts_with(pattern, expected):
+    assert _selector_helper(selectors.starts_with, expected, pattern)
+
+
+@pytest.mark.parametrize(
+    "pattern,expected",
+    [
+        ("t", ["height", "weight"]),
+        ("e", ["name", "age"]),
+    ],
+)
+def test_ends_with(pattern, expected):
+    assert _selector_helper(selectors.ends_with, expected, pattern)
+
+
+@pytest.mark.parametrize(
+    "prefix,values,width,expected",
+    [
+        ("col", range(1, 3), 0, ["col1", "col2"]),
+        ("ft", range(1, 4), 0, []),
+        ("ft", range(1, 4), 2, ["ft01", "ft02", "ft03"]),
+    ],
+)
+def test_num_range(prefix, values, width, expected):
+    columns = ["col1", "col2", "ft01", "ft02", "ft03"]
+    selector = selectors.num_range(prefix, values, width=width)
+
+    assert selector(columns) == expected
+
+
+def test_tidyselector_negate():
+    selector = -selectors.everything()
+    assert selector(COLUMN_NAMES) == []
+
+
+def test_tidyselector_filter_columns():
+    assert selectors.everything().filter_columns(COLUMN_NAMES) == COLUMN_NAMES
