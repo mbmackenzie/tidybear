@@ -1,12 +1,11 @@
 from typing import Any
 from typing import List
 from typing import Optional
-from typing import Sequence
 from typing import Union
 
 import pandas as pd
 
-from tidybear.selectors import TidySelector
+from tidybear.selectors import _ColumnList
 from tidybear.utils import get_column_names
 
 
@@ -66,7 +65,7 @@ def pivot_wider(
 
 def pivot_longer(
     df: pd.DataFrame,
-    cols: Union[str, List[str], TidySelector],
+    cols: _ColumnList,
     *,
     names_to: str = "name",
     values_to: str = "value",
@@ -110,12 +109,7 @@ def pivot_longer(
 
     df = df.copy()
 
-    if isinstance(cols, list):
-        to_select: Sequence[Union[str, TidySelector]] = cols
-    else:
-        to_select = [cols]
-
-    columns = get_column_names(df.columns, to_select)
+    columns = get_column_names(df.columns, cols)
     index_columns = (
         columns if cols_are_index else [c for c in df.columns if c not in columns]
     )
@@ -127,6 +121,6 @@ def pivot_longer(
     df.columns = [*index_columns, names_to, values_to]
 
     if drop_na:
-        df = df.dropna()
+        df = df.dropna(subset=[values_to])
 
     return df

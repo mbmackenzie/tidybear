@@ -6,7 +6,7 @@ from tidybear import GroupBy
 
 
 @pytest.fixture
-def data() -> pd.DataFrame:
+def data():
     n = 1000
     df = pd.DataFrame(
         {
@@ -19,7 +19,7 @@ def data() -> pd.DataFrame:
     return df
 
 
-def test_groupby_same_series(data: pd.DataFrame) -> None:
+def test_groupby_same_series(data):
     """You should be able to access all the columns of your dataframed that are not grouped"""
     pd_g = data.groupby("A")
     with GroupBy(data, "A") as tb_g:

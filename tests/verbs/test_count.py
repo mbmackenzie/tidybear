@@ -14,14 +14,14 @@ def df() -> DataFrame:
     )
 
 
-def test_count(df: DataFrame) -> None:
+def test_count(df):
     counts = count(df, "A")
     assert counts.columns.tolist() == ["A", "n"]
     assert counts.A.tolist() == [1, 2, 3]
     assert counts.n.tolist() == [1, 2, 1]
 
 
-def test_count_with_sort(df: DataFrame) -> None:
+def test_count_with_sort(df):
     counts = count(df, "A", sort=True)
     assert counts.columns.tolist() == ["A", "n"]
     assert counts.A.tolist() == [2, 1, 3]

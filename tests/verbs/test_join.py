@@ -12,7 +12,7 @@ from tidybear import right_join
 
 
 @pytest.fixture
-def students() -> pd.DataFrame:
+def students():
     return pd.DataFrame(
         {
             "student_id": [1, 2, 3, 4, 5],
@@ -23,7 +23,7 @@ def students() -> pd.DataFrame:
 
 
 @pytest.fixture
-def classes() -> pd.DataFrame:
+def classes():
     return pd.DataFrame(
         {
             "class_id": [1, 2, 2, 3, 3],
@@ -32,7 +32,7 @@ def classes() -> pd.DataFrame:
     )
 
 
-def test_inner_join(students: pd.DataFrame, classes: pd.DataFrame) -> None:
+def test_inner_join(students, classes):
     result = inner_join(students, classes, "student_id")
     assert result.equals(
         pd.DataFrame(
@@ -46,7 +46,7 @@ def test_inner_join(students: pd.DataFrame, classes: pd.DataFrame) -> None:
     )
 
 
-def test_left_join(students: pd.DataFrame, classes: pd.DataFrame) -> None:
+def test_left_join(students, classes):
     result = left_join(students, classes, "student_id")
     assert result.equals(
         pd.DataFrame(
@@ -60,7 +60,7 @@ def test_left_join(students: pd.DataFrame, classes: pd.DataFrame) -> None:
     )
 
 
-def test_right_join(students: pd.DataFrame, classes: pd.DataFrame) -> None:
+def test_right_join(students, classes):
     result = right_join(students, classes, "student_id")
     assert result.equals(
         pd.DataFrame(
@@ -74,7 +74,7 @@ def test_right_join(students: pd.DataFrame, classes: pd.DataFrame) -> None:
     )
 
 
-def test_outer_join(students: pd.DataFrame, classes: pd.DataFrame) -> None:
+def test_outer_join(students, classes):
     result = outer_join(students, classes, "student_id")
     assert result.equals(
         pd.DataFrame(
@@ -88,7 +88,7 @@ def test_outer_join(students: pd.DataFrame, classes: pd.DataFrame) -> None:
     )
 
 
-def test_cross_join(students: pd.DataFrame) -> None:
+def test_cross_join(students):
     result = cross_join(students, pd.DataFrame({"active": [1, 0]}))
     result = result[["student_id", "active"]]
 

@@ -8,7 +8,7 @@ from tidybear import pivot_wider
 
 
 @pytest.fixture
-def df_wide() -> DataFrame:
+def df_wide():
     return DataFrame(
         {
             "idx": [1, 2, 3],
@@ -19,7 +19,7 @@ def df_wide() -> DataFrame:
 
 
 @pytest.fixture
-def df_long() -> DataFrame:
+def df_long():
     return DataFrame(
         {
             "idx": [1, 2, 3, 1, 2, 3],

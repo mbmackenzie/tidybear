@@ -4,10 +4,7 @@ from typing import Callable
 from pandas import DataFrame
 
 
-def mutate(
-    df: DataFrame,
-    **kwargs: Callable[..., Any],
-) -> DataFrame:
+def mutate(df: DataFrame, **kwargs: Callable[..., Any]) -> DataFrame:
     """Create a new column in a dataframe using applied functions
 
     ```python
