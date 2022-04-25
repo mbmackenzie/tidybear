@@ -1,10 +1,12 @@
 from typing import Any
 from typing import List
-from typing import Literal
 from typing import Optional
 from typing import Union
 
 import pandas as pd
+
+from tidybear.selectors import _ColumnList
+from tidybear.utils import get_column_names
 
 
 def pivot_wider(
@@ -63,12 +65,12 @@ def pivot_wider(
 
 def pivot_longer(
     df: pd.DataFrame,
-    cols: Union[str, List[str]],
+    cols: _ColumnList,
     *,
     names_to: str = "name",
     values_to: str = "value",
-    cols_are: Literal["index", "targets"] = "index",
     drop_na: bool = True,
+    cols_are_index: bool = False,
 ) -> pd.DataFrame:
     """
     Transform a dataframe from wide to long
@@ -77,23 +79,22 @@ def pivot_longer(
     ----------
     df : pandas.DataFrame
         The dataframe to transform
-    cols : List[str]
-        The column name to pivot if "flip_cols=False"
-        otherwise the columns to use as index
+    cols : str, list[str], TidySelector
+        The columns to pivot on, use all the others as the index
     names_to : str
-        The column name to pivot on
+        The new name for the name column
     values_to : str
-        The column name to pivot on
-    cols_are : str, optional
-        'index' or 'targets'
+        the new name for the value column
     drop_na : bool, optional
         Whether to drop rows with missing values, default True
+    cols_are_index : bool, optional
+        Whether the columns are the index or the columns to pivot on, default False
 
     Examples
     --------
 
     >>> df = pd.DataFrame({"idx": [1, 2], "a": [1, 2], "b": [1, 2]})
-    >>> pivot_longer(df, "idx")
+    >>> pivot_longer(df, index="idx")
        idx name  value
     0    1    a      1
     1    1    b      1
@@ -108,25 +109,18 @@ def pivot_longer(
 
     df = df.copy()
 
-    if isinstance(cols, str):
-        cols = [cols]
+    columns = get_column_names(df.columns, cols)
+    index_columns = (
+        columns if cols_are_index else [c for c in df.columns if c not in columns]
+    )
 
-    if cols_are == "index":
-        index_cols = cols
-    elif cols_are == "targets":
-        index_cols = [c for c in df.columns if c not in cols]
-    else:
-        raise ValueError(
-            f"cols_are must be one of 'index' or 'targets', not {cols_are}"
-        )
+    if len(index_columns) > 0:
+        df.set_index(index_columns, inplace=True)
 
-    df = df.set_index(index_cols)
     df = df.stack(dropna=False).reset_index()
-
-    new_cols = index_cols + [names_to, values_to]
-    df.columns = new_cols
+    df.columns = [*index_columns, names_to, values_to]
 
     if drop_na:
-        df = df.dropna()
+        df = df.dropna(subset=[values_to])
 
     return df

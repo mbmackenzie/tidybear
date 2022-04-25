@@ -3,9 +3,11 @@ from __future__ import annotations
 from typing import Any
 from typing import List
 from typing import Optional
-from typing import Union
 
 import pandas as pd
+
+from tidybear.selectors import _ColumnList
+from tidybear.utils import get_column_names
 
 
 class GroupBy:
@@ -53,7 +55,7 @@ class GroupBy:
     ```
     """
 
-    def __init__(self, df: pd.DataFrame, groups: Union[str, List[str]]) -> None:
+    def __init__(self, df: pd.DataFrame, groups: _ColumnList) -> None:
         """Creates an active grouping that can track and summarise provided Stats.
         Must be used within a with statement.
 
@@ -64,8 +66,8 @@ class GroupBy:
         groups : str, List[str]
             Used to determine the groups for the groupby
         """
-        self.__groups = groups
-        self.__groupby_obj = df.groupby(groups)
+        self.__groups = get_column_names(df.columns, groups)
+        self.__groupby_obj = df.groupby(self.__groups)
 
         self.__stats: List[pd.Series] = []
 
@@ -76,14 +78,14 @@ class GroupBy:
         self.__stats = []
 
     @property
-    def groups(self) -> Union[str, List[str]]:
+    def groups(self) -> List[str]:
         """Get the grouping variables
 
         Returns
         -------
         str, List[str]
         """
-        return self.__groups
+        return list(self.__groups)
 
     def get(self, column: str) -> pd.Series:
         """Access a grouped column by name
@@ -197,7 +199,7 @@ class GroupBy:
 
         agg = self.get(column).agg(func)
 
-        if decimals:
+        if decimals is not None:
             agg = agg.round(decimals)
 
         return self.__add_stat(name, agg)
