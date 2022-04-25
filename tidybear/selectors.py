@@ -21,6 +21,7 @@ from typing import Iterable
 from typing import List
 from typing import Protocol
 from typing import Sequence
+from typing import Union
 
 
 class TidySelectFunction(Protocol):
@@ -32,10 +33,10 @@ class TidySelector:
     def __init__(self, selector: TidySelectFunction) -> None:
         self.selector = selector
 
-    def __call__(self, columns: Iterable[str]) -> Iterable[str]:
+    def __call__(self, columns: Iterable[str]) -> Sequence[str]:
         return self.selector(columns)
 
-    def filter_columns(self, columns: Iterable[str]) -> Iterable[str]:
+    def filter_columns(self, columns: Iterable[str]) -> Sequence[str]:
         return self.selector(columns)
 
     def __neg__(self) -> TidySelector:
@@ -43,6 +44,9 @@ class TidySelector:
             return [c for c in columns if c not in self.selector(columns)]
 
         return TidySelector(neg_selector)
+
+
+_ColumnList = Union[str, TidySelector, Sequence[Union[str, TidySelector]]]
 
 
 def everything() -> TidySelector:
