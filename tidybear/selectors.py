@@ -207,3 +207,49 @@ def num_range(prefix: str, values: Iterable[int], width: int = 0) -> TidySelecto
         return [c for c in columns if c in allowed]
 
     return TidySelector(selector)
+
+
+def all_of(these_columns: Iterable[str]) -> TidySelector:
+    """Select these columns iff they are all in the dataframe
+
+    Parameters
+    ----------
+    these_columns : strings
+        The name of the columns
+
+    Examples
+    --------
+    >>> cols = ["A", "B", "C"]
+    >>> all_of(["A", "B"])(cols)
+    ['A', 'B']
+    """
+
+    def selector(columns: Iterable[str]) -> List[str]:
+        for column in these_columns:
+            if column not in columns:
+                raise ValueError(f"Column {column} not present in dataframe")
+
+        return [c for c in these_columns]
+
+    return TidySelector(selector)
+
+
+def any_of(these_columns: Iterable[str]) -> TidySelector:
+    """Select any these columns if they are all in the dataframe
+
+    Parameters
+    ----------
+    these_columns : strings
+        The name of the columns
+
+    Examples
+    --------
+    >>> cols = ["A", "B", "C"]
+    >>> any_of(["A", "D"])(cols)
+    ['A']
+    """
+
+    def selector(columns: Iterable[str]) -> List[str]:
+        return [c for c in these_columns if c in columns]
+
+    return TidySelector(selector)
