@@ -2,11 +2,13 @@ from typing import List
 from typing import Union
 
 import pandas as pd
+import pandas_flavor as pf
 
 from tidybear.selectors import TidySelector
 from tidybear.utils import get_column_names
 
 
+@pf.register_dataframe_method
 def select(df: pd.DataFrame, *args: Union[str, TidySelector], **kwargs: str) -> pd.DataFrame:
     """Select columns from a dataframe
 

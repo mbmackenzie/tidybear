@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import List
 from typing import Union
 
+import pandas_flavor as pf
 from pandas import DataFrame
 
 
@@ -25,6 +26,7 @@ def _slice(
     return df.sort_values(order_by, ascending=ascending).head(n)
 
 
+@pf.register_dataframe_method
 def slice_max(
     df: DataFrame,
     *,
@@ -51,6 +53,7 @@ def slice_max(
     return _slice(df, order_by, n, False, groupby)
 
 
+@pf.register_dataframe_method
 def slice_min(
     df: DataFrame,
     *,

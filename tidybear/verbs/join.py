@@ -2,6 +2,7 @@ from typing import Any
 from typing import List
 
 import pandas as pd
+import pandas_flavor as pf
 from pandas import DataFrame
 
 
@@ -61,6 +62,7 @@ def join(
     )
 
 
+@pf.register_dataframe_method
 def inner_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> DataFrame:
     """Left join two dataframes on a column
 
@@ -85,6 +87,7 @@ def inner_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> 
     return join(left, right, "inner", *args, **kwargs)
 
 
+@pf.register_dataframe_method
 def left_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> DataFrame:
     """Left join two dataframes on a column
 
@@ -109,6 +112,7 @@ def left_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> D
     return join(left, right, "left", *args, **kwargs)
 
 
+@pf.register_dataframe_method
 def right_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> DataFrame:
     """Left join two dataframes on a column
 
@@ -133,6 +137,7 @@ def right_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> 
     return join(left, right, "right", *args, **kwargs)
 
 
+@pf.register_dataframe_method
 def outer_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> DataFrame:
     """Left join two dataframes on a column
 
@@ -157,7 +162,8 @@ def outer_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> 
     return join(left, right, "outer", *args, **kwargs)
 
 
-def cross_join(left: DataFrame, right: DataFrame) -> DataFrame:
+@pf.register_dataframe_method
+def crossing(left: DataFrame, right: DataFrame) -> DataFrame:
     """Cross join two dataframes
 
     Parameters

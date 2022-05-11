@@ -45,13 +45,13 @@ def test_rename_no_cols_dict(df):
 
 
 def test_rename_all_with_kwargs(df):
-    renamed = rename(df, A="X", B="Y")
+    renamed = rename(df, X="A", Y="B")
     assert renamed.columns.tolist() == ["X", "Y"]
     assert_array_equal(df.values, renamed.values)
 
 
 def test_rename_some_with_kwargs(df):
-    renamed = rename(df, B="Y")
+    renamed = rename(df, Y="B")
     assert renamed.columns.tolist() == ["A", "Y"]
     assert_array_equal(df.values, renamed.values)
 

@@ -1,6 +1,7 @@
 from tidybear.groupby import GroupBy
 from tidybear.verbs.count import count
-from tidybear.verbs.join import cross_join
+from tidybear.verbs.count import tb_count
+from tidybear.verbs.join import crossing
 from tidybear.verbs.join import inner_join
 from tidybear.verbs.join import left_join
 from tidybear.verbs.join import outer_join
@@ -9,6 +10,7 @@ from tidybear.verbs.mutate import mutate
 from tidybear.verbs.pivot import pivot_longer
 from tidybear.verbs.pivot import pivot_wider
 from tidybear.verbs.rename import rename
+from tidybear.verbs.rename import tb_rename
 from tidybear.verbs.select import select
 from tidybear.verbs.slice import slice_max
 from tidybear.verbs.slice import slice_min
@@ -16,10 +18,12 @@ from tidybear.verbs.slice import slice_min
 __all__ = (
     "GroupBy",
     "count",
+    "tb_count",
     "mutate",
     "pivot_longer",
     "pivot_wider",
     "rename",
+    "tb_rename",
     "slice_max",
     "slice_min",
     "select",
@@ -27,5 +31,5 @@ __all__ = (
     "left_join",
     "right_join",
     "outer_join",
-    "cross_join",
+    "crossing",
 )

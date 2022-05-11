@@ -4,11 +4,13 @@ from typing import Optional
 from typing import Union
 
 import pandas as pd
+import pandas_flavor as pf
 
 from tidybear.selectors import _ColumnList
 from tidybear.utils import get_column_names
 
 
+@pf.register_dataframe_method
 def pivot_wider(
     df: pd.DataFrame,
     *,
@@ -63,6 +65,7 @@ def pivot_wider(
     return df.reset_index()
 
 
+@pf.register_dataframe_method
 def pivot_longer(
     df: pd.DataFrame,
     cols: _ColumnList,

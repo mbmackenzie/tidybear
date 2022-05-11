@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import pandas_flavor as pf
 from pandas import DataFrame
 
 from tidybear.selectors import _ColumnList
@@ -28,9 +29,25 @@ def count(
     """
 
     groupby_cols = get_column_names(df.columns, columns)
+
+    if all(c == "n" for c in name) and name in groupby_cols:
+        new_name = "n" * (len(name) + 1)
+        return count(df, groupby_cols, sort=sort, name=new_name)
+
     counts = df.groupby(groupby_cols).size().rename(name).reset_index()
 
     if sort:
         return counts.sort_values(name, ascending=False)
     else:
         return counts.sort_values(columns)
+
+
+@pf.register_dataframe_method
+def tb_count(
+    df: DataFrame,
+    columns: _ColumnList,
+    *,
+    sort: bool = False,
+    name: str = "n",
+) -> DataFrame:
+    return count(df, columns, sort=sort, name=name)

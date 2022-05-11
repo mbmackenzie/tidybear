@@ -1,5 +1,6 @@
 from typing import Any
 
+import pandas_flavor as pf
 from pandas import DataFrame
 
 
@@ -15,8 +16,8 @@ def rename(df: DataFrame, *args: Any, **kwargs: Any) -> DataFrame:
       of columns in the dataframe.
     - Use a dictionary with the keys as existing column names and
       values as the new column names.
-    - Use keyword arguments with the key as existing column names
-      and values as the new columns names.
+    - Use keyword arguments with the key as new column names
+      and values as the old columns names.
 
     Parameters
     ----------
@@ -50,7 +51,7 @@ def rename(df: DataFrame, *args: Any, **kwargs: Any) -> DataFrame:
     X  Y
     0  1  3
     1  2  4
-    >>> tb.rename(df, A="X", B="Y")
+    >>> tb.rename(df, X="A", Y="B")
     X  Y
     0  1  3
     1  2  4
@@ -58,7 +59,7 @@ def rename(df: DataFrame, *args: Any, **kwargs: Any) -> DataFrame:
     """
     df = df.copy()
     if len(kwargs) > 0:
-        return df.rename(columns=kwargs)
+        return df.rename(columns={v: k for k, v in kwargs.items()})
 
     if len(args) == 1 and isinstance(args[0], dict):
         return df.rename(columns=args[0])
@@ -75,3 +76,8 @@ def rename(df: DataFrame, *args: Any, **kwargs: Any) -> DataFrame:
         return df
 
     return df
+
+
+@pf.register_dataframe_method
+def tb_rename(df: DataFrame, *args: str, **kwargs: str) -> DataFrame:
+    return rename(df, *args, **kwargs)

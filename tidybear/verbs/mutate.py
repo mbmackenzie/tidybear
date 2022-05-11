@@ -1,9 +1,11 @@
 from typing import Any
 from typing import Callable
 
+import pandas_flavor as pf
 from pandas import DataFrame
 
 
+@pf.register_dataframe_method
 def mutate(df: DataFrame, **kwargs: Callable[..., Any]) -> DataFrame:
     """Create a new column in a dataframe using applied functions
 

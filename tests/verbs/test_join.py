@@ -2,7 +2,7 @@ import pandas as pd
 import pytest
 from numpy import nan as NA
 
-from tidybear import cross_join
+from tidybear import crossing
 from tidybear import inner_join
 from tidybear import left_join
 from tidybear import outer_join
@@ -88,8 +88,8 @@ def test_outer_join(students, classes):
     )
 
 
-def test_cross_join(students):
-    result = cross_join(students, pd.DataFrame({"active": [1, 0]}))
+def test_crossing(students):
+    result = crossing(students, pd.DataFrame({"active": [1, 0]}))
     result = result[["student_id", "active"]]
 
     assert result.equals(
