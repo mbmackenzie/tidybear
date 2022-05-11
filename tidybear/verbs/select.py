@@ -7,9 +7,7 @@ from tidybear.selectors import TidySelector
 from tidybear.utils import get_column_names
 
 
-def select(
-    df: pd.DataFrame, *args: Union[str, TidySelector], **kwargs: str
-) -> pd.DataFrame:
+def select(df: pd.DataFrame, *args: Union[str, TidySelector], **kwargs: str) -> pd.DataFrame:
     """Select columns from a dataframe
 
     Parameters

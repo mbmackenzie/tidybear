@@ -110,9 +110,7 @@ def pivot_longer(
     df = df.copy()
 
     columns = get_column_names(df.columns, cols)
-    index_columns = (
-        columns if cols_are_index else [c for c in df.columns if c not in columns]
-    )
+    index_columns = columns if cols_are_index else [c for c in df.columns if c not in columns]
 
     if len(index_columns) > 0:
         df.set_index(index_columns, inplace=True)

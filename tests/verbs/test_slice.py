@@ -33,6 +33,4 @@ def test_slice_min_yes_group(df):
     for n in range(1, 5):
         bottom_rows = slice_min(df, order_by="B", n=n, groupby="A")
         assert bottom_rows[bottom_rows.A == 1].B.tolist() == list(range(1, 2 * n, 2))
-        assert bottom_rows[bottom_rows.A == 2].B.tolist() == list(
-            range(2, 2 * n + 1, 2)
-        )
+        assert bottom_rows[bottom_rows.A == 2].B.tolist() == list(range(2, 2 * n + 1, 2))

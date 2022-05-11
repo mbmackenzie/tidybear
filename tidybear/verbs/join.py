@@ -39,8 +39,7 @@ def join(
     if args:
         if len(args) > 1 and any([isinstance(arg, list) for arg in args]):
             raise ValueError(
-                "Only individual names or one list of names "
-                "can be passed as unnamed args"
+                "Only individual names or one list of names " "can be passed as unnamed args"
             )
 
         if len(args) == 1 and isinstance(args[0], list):
@@ -62,9 +61,7 @@ def join(
     )
 
 
-def inner_join(
-    left: DataFrame, right: DataFrame, *args: Any, **kwargs: str
-) -> DataFrame:
+def inner_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> DataFrame:
     """Left join two dataframes on a column
 
     Parameters
@@ -88,9 +85,7 @@ def inner_join(
     return join(left, right, "inner", *args, **kwargs)
 
 
-def left_join(
-    left: DataFrame, right: DataFrame, *args: Any, **kwargs: str
-) -> DataFrame:
+def left_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> DataFrame:
     """Left join two dataframes on a column
 
     Parameters
@@ -114,9 +109,7 @@ def left_join(
     return join(left, right, "left", *args, **kwargs)
 
 
-def right_join(
-    left: DataFrame, right: DataFrame, *args: Any, **kwargs: str
-) -> DataFrame:
+def right_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> DataFrame:
     """Left join two dataframes on a column
 
     Parameters
@@ -140,9 +133,7 @@ def right_join(
     return join(left, right, "right", *args, **kwargs)
 
 
-def outer_join(
-    left: DataFrame, right: DataFrame, *args: Any, **kwargs: str
-) -> DataFrame:
+def outer_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> DataFrame:
     """Left join two dataframes on a column
 
     Parameters
