@@ -1,17 +1,26 @@
 from tidybear.groupby import GroupBy
-from tidybear.verbs.count import count
-from tidybear.verbs.join import cross_join
-from tidybear.verbs.join import inner_join
-from tidybear.verbs.join import left_join
-from tidybear.verbs.join import outer_join
-from tidybear.verbs.join import right_join
-from tidybear.verbs.mutate import mutate
-from tidybear.verbs.pivot import pivot_longer
-from tidybear.verbs.pivot import pivot_wider
-from tidybear.verbs.rename import rename
-from tidybear.verbs.select import select
-from tidybear.verbs.slice import slice_max
-from tidybear.verbs.slice import slice_min
+from tidybear.selectors import contains
+from tidybear.selectors import ends_with
+from tidybear.selectors import everything
+from tidybear.selectors import first_col
+from tidybear.selectors import last_col
+from tidybear.selectors import matches
+from tidybear.selectors import num_range
+from tidybear.selectors import starts_with
+from tidybear.verbs import count
+from tidybear.verbs import cross_join
+from tidybear.verbs import inner_join
+from tidybear.verbs import left_join
+from tidybear.verbs import mutate
+from tidybear.verbs import outer_join
+from tidybear.verbs import pivot_longer
+from tidybear.verbs import pivot_wider
+from tidybear.verbs import rename
+from tidybear.verbs import right_join
+from tidybear.verbs import select
+from tidybear.verbs import slice_max
+from tidybear.verbs import slice_min
+
 
 __all__ = (
     "GroupBy",
@@ -28,4 +37,12 @@ __all__ = (
     "right_join",
     "outer_join",
     "cross_join",
+    "everything",
+    "last_col",
+    "first_col",
+    "contains",
+    "matches",
+    "starts_with",
+    "ends_with",
+    "num_range",
 )

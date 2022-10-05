@@ -67,7 +67,7 @@ class GroupBy:
             Used to determine the groups for the groupby
         """
         self.__groups = get_column_names(df.columns, groups)
-        self.__groupby_obj = df.groupby(self.__groups)
+        self.__groupby_obj = df.groupby(self.__groups, group_keys=False)
 
         self.__stats: List[pd.Series] = []
 

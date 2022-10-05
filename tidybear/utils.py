@@ -8,7 +8,8 @@ from tidybear.selectors import TidySelector
 
 
 def get_column_name(
-    cols: Iterable[str], to_select: Union[str, TidySelector]
+    cols: Iterable[str],
+    to_select: Union[str, TidySelector],
 ) -> Sequence[str]:
     if isinstance(to_select, str):
         return [to_select]
