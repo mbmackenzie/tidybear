@@ -4,10 +4,13 @@ from typing import Any
 from typing import Callable
 from typing import List
 from typing import Optional
+from typing import Sequence
+from typing import Tuple
 from typing import Union
 
 import pandas as pd
 from pandas import DataFrame
+from pandas import Series
 
 from tidybear.selectors import _ColumnList
 from tidybear.selectors import TidySelector
@@ -100,7 +103,50 @@ def join(
     )
 
 
-def inner_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> DataFrame:
+JoinKey = Union[str, Sequence[str]]
+ByKey = Union[JoinKey, Tuple[JoinKey, JoinKey]]
+
+
+def _join(
+    left: DataFrame,
+    right: DataFrame,
+    how: str,
+    left_on: JoinKey,
+    right_on: JoinKey,
+) -> DataFrame:
+    """join two dataframes on a column
+
+    Parameters
+    ----------
+    left : pandas.DataFrame
+        The left dataframe to join
+    right : pandas.DataFrame
+        The right dataframe to join
+    left_on : JoinKey
+        The column(s) to join on the left
+    right_on : JoinKey
+        The column(s) to join on the right
+
+    Returns
+    -------
+    pandas.DataFrame
+        The joined dataframe
+
+    """
+    return left.merge(right, how=how, left_on=left_on, right_on=right_on)
+
+
+def _get_join_keys(by: ByKey) -> Tuple[JoinKey, JoinKey]:
+    if isinstance(by, tuple):
+        if len(by) == 2:
+            return by  # type: ignore
+
+        raise ValueError("if using tuple key, must be a tuple of length 2")
+
+    return by, by
+
+
+def inner_join(left: DataFrame, right: DataFrame, by: ByKey) -> DataFrame:
     """Left join two dataframes on a column
 
     Parameters
@@ -109,11 +155,9 @@ def inner_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> 
         The left dataframe to join
     right : pandas.DataFrame
         The right dataframe to join
-    *args : str
-        The columns to join on
-        Can be individual columns, or one list of columns
-    **kwargs : str
-        The columns to join, left="right"
+    by: ByKey
+        The columns to join on. Can be a single column name, for mutual column names on both sides,
+        or a tuple of column names, for different column names on each side.
 
     Returns
     -------
@@ -121,10 +165,10 @@ def inner_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> 
         The joined dataframe
 
     """
-    return join(left, right, "inner", *args, **kwargs)
+    return _join(left, right, "inner", *_get_join_keys(by))
 
 
-def left_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> DataFrame:
+def left_join(left: DataFrame, right: DataFrame, by: ByKey) -> DataFrame:
     """Left join two dataframes on a column
 
     Parameters
@@ -133,11 +177,9 @@ def left_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> D
         The left dataframe to join
     right : pandas.DataFrame
         The right dataframe to join
-    *args : str
-        The columns to join on
-        Can be individual columns, or one list of columns
-    **kwargs : str
-        The columns to join, left="right"
+    by: ByKey
+        The columns to join on. Can be a single column name, for mutual column names on both sides,
+        or a tuple of column names, for different column names on each side.
 
     Returns
     -------
@@ -145,10 +187,10 @@ def left_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> D
         The joined dataframe
 
     """
-    return join(left, right, "left", *args, **kwargs)
+    return _join(left, right, "left", *_get_join_keys(by))
 
 
-def right_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> DataFrame:
+def right_join(left: DataFrame, right: DataFrame, by: ByKey) -> DataFrame:
     """Left join two dataframes on a column
 
     Parameters
@@ -157,11 +199,9 @@ def right_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> 
         The left dataframe to join
     right : pandas.DataFrame
         The right dataframe to join
-    *args : str
-        The columns to join on
-        Can be individual columns, or one list of columns
-    **kwargs : str
-        The columns to join, left="right"
+    by: ByKey
+        The columns to join on. Can be a single column name, for mutual column names on both sides,
+        or a tuple of column names, for different column names on each side.
 
     Returns
     -------
@@ -169,10 +209,10 @@ def right_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> 
         The joined dataframe
 
     """
-    return join(left, right, "right", *args, **kwargs)
+    return _join(left, right, "right", *_get_join_keys(by))
 
 
-def outer_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> DataFrame:
+def outer_join(left: DataFrame, right: DataFrame, by: ByKey) -> DataFrame:
     """Left join two dataframes on a column
 
     Parameters
@@ -181,11 +221,9 @@ def outer_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> 
         The left dataframe to join
     right : pandas.DataFrame
         The right dataframe to join
-    *args : str
-        The columns to join on
-        Can be individual columns, or one list of columns
-    **kwargs : str
-        The columns to join, left="right"
+    by: ByKey
+        The columns to join on. Can be a single column name, for mutual column names on both sides,
+        or a tuple of column names, for different column names on each side.
 
     Returns
     -------
@@ -193,10 +231,29 @@ def outer_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> 
         The joined dataframe
 
     """
-    return join(left, right, "outer", *args, **kwargs)
+    return _join(left, right, "outer", *_get_join_keys(by))
 
 
-def cross_join(left: DataFrame, right: DataFrame) -> DataFrame:
+def semi_join(left: DataFrame, right: DataFrame, by: ByKey) -> DataFrame:
+    """Semi join two dataframes, i.e., return all rows and columns from the left dataframe
+    that have a match in the right dataframe. The columns from the right dataframe are not
+    included in the result.
+
+    Parameters
+    ----------
+    left : pandas.DataFrame
+        The left dataframe to join
+    right : pandas.DataFrame
+        The right dataframe to join
+    by: ByKey
+        The columns to join on. Can be a single column name, for mutual column names on both sides,
+        or a tuple of column names, for different column names on each side.
+    """
+
+    return left.merge(right, how="inner", left_on=by, right_on=by).reindex(columns=left.columns)
+
+
+def crossing(left: DataFrame, right: DataFrame) -> DataFrame:
     """Cross join two dataframes
 
     Parameters
@@ -208,22 +265,6 @@ def cross_join(left: DataFrame, right: DataFrame) -> DataFrame:
     """
 
     return left.merge(right, how="cross")
-
-
-def semi_join(left: DataFrame, right: DataFrame) -> DataFrame:
-    """Semi join two dataframes, i.e., return all rows and columns from the left dataframe
-    that have a match in the right dataframe. The columns from the right dataframe are not
-    included in the result.
-
-    Parameters
-    ----------
-    left : pandas.DataFrame
-        The left dataframe to join
-    right : pandas.DataFrame
-        The right dataframe to join
-    """
-
-    return left.merge(right, how="inner").drop(columns=right.columns)
 
 
 def mutate(df: DataFrame, **kwargs: Callable[..., Any]) -> DataFrame:
@@ -571,3 +612,35 @@ def slice_min(
     Dataframe
     """
     return _slice(df, order_by, n, True, groupby)
+
+
+def filter(
+    df: DataFrame,
+    *args: Union[str, Callable[[DataFrame], Series]],
+    subset_cols: Optional[Union[str, Sequence[str]]] = None,
+) -> DataFrame:
+    """Filter a dataframe
+
+    Parameters
+    ----------
+    df : DataFrame
+    *args : str or callable
+        The column name or a callable function that returns a boolean series
+
+    Returns
+    -------
+    DataFrame
+    """
+
+    if len(args) == 0:
+        return df.copy()
+
+    new_df = df.copy()
+    for arg in args:
+
+        if isinstance(arg, str):
+            new_df = new_df.query(arg)
+        else:
+            new_df = new_df.where(arg).dropna(how="all", subset=subset_cols or df.columns)
+
+    return df.loc[new_df.index].copy()

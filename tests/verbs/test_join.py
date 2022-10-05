@@ -7,8 +7,7 @@ from tidybear import inner_join
 from tidybear import left_join
 from tidybear import outer_join
 from tidybear import right_join
-
-# from tidybear.verbs.join import join
+from tidybear import semi_join
 
 
 @pytest.fixture
@@ -97,6 +96,19 @@ def test_crossing(students):
             {
                 "student_id": [1, 1, 2, 2, 3, 3, 4, 4, 5, 5],
                 "active": [1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+            }
+        )
+    )
+
+
+def test_semi_join(students, classes):
+    result = semi_join(students, classes, "student_id")
+    assert result.equals(
+        pd.DataFrame(
+            {
+                "student_id": [1, 2, 3],
+                "name": ["John", "Jane", "Jack"],
+                "grade": [10, 8, 12],
             }
         )
     )
