@@ -78,8 +78,7 @@ def join(
     if args:
         if len(args) > 1 and any([isinstance(arg, list) for arg in args]):
             raise ValueError(
-                "Only individual names or one list of names "
-                "can be passed as unnamed args"
+                "Only individual names or one list of names " "can be passed as unnamed args"
             )
 
         if len(args) == 1 and isinstance(args[0], list):
@@ -101,9 +100,7 @@ def join(
     )
 
 
-def inner_join(
-    left: DataFrame, right: DataFrame, *args: Any, **kwargs: str
-) -> DataFrame:
+def inner_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> DataFrame:
     """Left join two dataframes on a column
 
     Parameters
@@ -127,9 +124,7 @@ def inner_join(
     return join(left, right, "inner", *args, **kwargs)
 
 
-def left_join(
-    left: DataFrame, right: DataFrame, *args: Any, **kwargs: str
-) -> DataFrame:
+def left_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> DataFrame:
     """Left join two dataframes on a column
 
     Parameters
@@ -153,9 +148,7 @@ def left_join(
     return join(left, right, "left", *args, **kwargs)
 
 
-def right_join(
-    left: DataFrame, right: DataFrame, *args: Any, **kwargs: str
-) -> DataFrame:
+def right_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> DataFrame:
     """Left join two dataframes on a column
 
     Parameters
@@ -179,9 +172,7 @@ def right_join(
     return join(left, right, "right", *args, **kwargs)
 
 
-def outer_join(
-    left: DataFrame, right: DataFrame, *args: Any, **kwargs: str
-) -> DataFrame:
+def outer_join(left: DataFrame, right: DataFrame, *args: Any, **kwargs: str) -> DataFrame:
     """Left join two dataframes on a column
 
     Parameters
@@ -364,9 +355,7 @@ def pivot_longer(
     df = df.copy()
 
     columns = get_column_names(df.columns, cols)
-    index_columns = (
-        columns if cols_are_index else [c for c in df.columns if c not in columns]
-    )
+    index_columns = columns if cols_are_index else [c for c in df.columns if c not in columns]
 
     if len(index_columns) > 0:
         df.set_index(index_columns, inplace=True)
@@ -392,8 +381,8 @@ def rename(df: DataFrame, *args: Any, **kwargs: Any) -> DataFrame:
       of columns in the dataframe.
     - Use a dictionary with the keys as existing column names and
       values as the new column names.
-    - Use keyword arguments with the key as existing column names
-      and values as the new columns names.
+    - Use keyword arguments with the key as new column names
+      and values as the old columns names.
 
     Parameters
     ----------
@@ -427,7 +416,7 @@ def rename(df: DataFrame, *args: Any, **kwargs: Any) -> DataFrame:
     X  Y
     0  1  3
     1  2  4
-    >>> tb.rename(df, A="X", B="Y")
+    >>> tb.rename(df, X="A", Y="B")
     X  Y
     0  1  3
     1  2  4
@@ -435,7 +424,7 @@ def rename(df: DataFrame, *args: Any, **kwargs: Any) -> DataFrame:
     """
     df = df.copy()
     if len(kwargs) > 0:
-        return df.rename(columns=kwargs)
+        return df.rename(columns={v: k for k, v in kwargs.items()})
 
     if len(args) == 1 and isinstance(args[0], dict):
         return df.rename(columns=args[0])

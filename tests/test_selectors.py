@@ -6,9 +6,9 @@ from tidybear import selectors
 COLUMN_NAMES = ["name", "age", "height", "weight", "eye_color", "hair_color"]
 
 
-def _selector_helper(selector, expected, pattern=None):
-    if pattern is not None:
-        return selector(pattern)(COLUMN_NAMES) == expected
+def _selector_helper(selector, expected, param=None):
+    if param is not None:
+        return selector(param)(COLUMN_NAMES) == expected
 
     return selector()(COLUMN_NAMES) == expected
 
@@ -92,3 +92,27 @@ def test_tidyselector_negate():
 
 def test_tidyselector_filter_columns():
     assert selectors.everything().filter_columns(COLUMN_NAMES) == COLUMN_NAMES
+
+
+@pytest.mark.parametrize(
+    "these_columns,expected", [(["name"], ["name"]), (["name", "age"], ["name", "age"])]
+)
+def test_all_of(these_columns, expected):
+    assert _selector_helper(selectors.all_of, expected, these_columns)
+
+
+def test_all_of_fails():
+    with pytest.raises(ValueError):
+        selectors.all_of(["name", "age", "mass"])(COLUMN_NAMES)
+
+
+@pytest.mark.parametrize(
+    "these_columns,expected",
+    [
+        (["name"], ["name"]),
+        (["name", "age"], ["name", "age"]),
+        (["name", "age", "mass"], ["name", "age"]),
+    ],
+)
+def test_any_of(these_columns, expected):
+    assert _selector_helper(selectors.any_of, expected, these_columns)

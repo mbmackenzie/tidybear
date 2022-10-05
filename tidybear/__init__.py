@@ -25,10 +25,12 @@ from tidybear.verbs import slice_min
 __all__ = (
     "GroupBy",
     "count",
+    "tb_count",
     "mutate",
     "pivot_longer",
     "pivot_wider",
     "rename",
+    "tb_rename",
     "slice_max",
     "slice_min",
     "select",
