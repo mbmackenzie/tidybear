@@ -6,8 +6,8 @@ from typing import Optional
 
 import pandas as pd
 
-from tidybear.selectors import _ColumnList
-from tidybear.utils import get_column_names
+from tidybear.selectors import _ColumnSelectorList
+from tidybear.selectors import _get_column_names
 
 
 class GroupBy:
@@ -55,7 +55,7 @@ class GroupBy:
     ```
     """
 
-    def __init__(self, df: pd.DataFrame, groups: _ColumnList) -> None:
+    def __init__(self, df: pd.DataFrame, groups: _ColumnSelectorList) -> None:
         """Creates an active grouping that can track and summarise provided Stats.
         Must be used within a with statement.
 
@@ -66,7 +66,7 @@ class GroupBy:
         groups : str, List[str]
             Used to determine the groups for the groupby
         """
-        self.__groups = get_column_names(df.columns, groups)
+        self.__groups = _get_column_names(df.columns, groups)
         self.__groupby_obj = df.groupby(self.__groups, group_keys=False)
 
         self.__stats: List[pd.Series] = []

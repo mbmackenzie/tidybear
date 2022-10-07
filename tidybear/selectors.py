@@ -46,7 +46,48 @@ class TidySelector:
         return TidySelector(neg_selector)
 
 
-_ColumnList = Union[str, TidySelector, Sequence[Union[str, TidySelector]]]
+_ColumnSelector = Union[str, TidySelector]
+_ColumnSelectorList = Union[_ColumnSelector, Sequence[_ColumnSelector]]
+
+
+def _flatten_selectors(
+    *args: Union[_ColumnSelector, _ColumnSelectorList, None],
+) -> Sequence[_ColumnSelector]:
+    """Flatten a list of selectors into a list of column names."""
+    selected: List[_ColumnSelector] = []
+    for item in args:
+        if item is None:
+            continue
+        if isinstance(item, str) or isinstance(item, TidySelector):
+            selected.append(item)
+        else:
+            selected.extend(item)
+
+    return selected
+
+
+def _get_column_name(
+    cols: Iterable[str],
+    to_select: Union[str, TidySelector],
+) -> Sequence[str]:
+    if isinstance(to_select, str):
+        return [to_select]
+
+    return to_select(cols)
+
+
+def _get_column_names(
+    cols: Iterable[str],
+    *args: Union[_ColumnSelector, _ColumnSelectorList, None],
+) -> Sequence[str]:
+
+    selectors = _flatten_selectors(*args)
+
+    selected: List[str] = []
+    for selector in selectors:
+        selected.extend(_get_column_name(cols, selector))
+
+    return selected
 
 
 def everything() -> TidySelector:

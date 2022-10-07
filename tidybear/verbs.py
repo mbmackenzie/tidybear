@@ -12,17 +12,19 @@ import pandas as pd
 from pandas import DataFrame
 from pandas import Series
 
-from tidybear.selectors import _ColumnList
+from tidybear.selectors import _ColumnSelector
+from tidybear.selectors import _ColumnSelectorList
+from tidybear.selectors import _get_column_names
 from tidybear.selectors import TidySelector
-from tidybear.utils import get_column_names
 
 
 def count(
     df: DataFrame,
-    columns: _ColumnList,
-    *,
+    *args: _ColumnSelector,
+    columns: Optional[_ColumnSelectorList] = None,
     sort: bool = False,
     name: str = "n",
+    wt: Optional[str] = None,
 ) -> DataFrame:
     """Quickly count the unique values of one or more variables.
 
@@ -30,21 +32,21 @@ def count(
     ----------
     df : DataFrame
         The dataframe to use
-    columns : str, TidySelectors, or list or str, TidySelectors
+    columns : str, TidySelector, or list of str and TidySelectors (default: None)
         The column(s) to group by.
-    sort : bool
+    sort : bool (default: False)
         If True, will show the largest groups at the top, by default False
-    name: str
+    name: str (default: "n")
         What to rename the new column with counts. By default "n" is used.
     """
 
-    groupby_cols = get_column_names(df.columns, columns)
-    counts = df.groupby(groupby_cols).size().rename(name).reset_index()
+    groupby_cols = _get_column_names(df.columns, args, columns)
+    counts = df.groupby(groupby_cols, dropna=False).size().rename(name).reset_index()
 
     if sort:
         return counts.sort_values(name, ascending=False)
     else:
-        return counts.sort_values(columns)
+        return counts.sort_values(groupby_cols)
 
 
 def join(
@@ -375,7 +377,7 @@ def pivot_wider(
 
 def pivot_longer(
     df: pd.DataFrame,
-    cols: _ColumnList,
+    cols: _ColumnSelectorList,
     *,
     names_to: str = "name",
     values_to: str = "value",
@@ -419,7 +421,7 @@ def pivot_longer(
 
     df = df.copy()
 
-    columns = get_column_names(df.columns, cols)
+    columns = _get_column_names(df.columns, cols)
     index_columns = columns if cols_are_index else [c for c in df.columns if c not in columns]
 
     if len(index_columns) > 0:
@@ -558,7 +560,7 @@ def select(
         to_select.extend(kwargs.values())
         rename_dict = {v: k for k, v in kwargs.items()}
 
-    to_select_names = get_column_names(df.columns, to_select)
+    to_select_names = _get_column_names(df.columns, to_select)
     selected = df.loc[:, to_select_names].copy()
 
     if kwargs:
