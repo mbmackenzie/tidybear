@@ -1,6 +1,6 @@
 *.vscode*
 *.DS_Store*
-
+scratch.py
 .python-version
 *.ipynb*
 !examples/*.ipynb

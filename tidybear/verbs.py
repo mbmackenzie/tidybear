@@ -250,7 +250,31 @@ def semi_join(left: DataFrame, right: DataFrame, by: ByKey) -> DataFrame:
         or a tuple of column names, for different column names on each side.
     """
 
-    return left.merge(right, how="inner", left_on=by, right_on=by).reindex(columns=left.columns)
+    return _join(left, right, "inner", *_get_join_keys(by)).reindex(columns=left.columns)
+
+
+def anti_join(left: DataFrame, right: DataFrame, by: ByKey) -> DataFrame:
+    """Anti join two dataframes, i.e., return all rows and columns from the left dataframe
+    that do not have a match in the right dataframe. The columns from the right dataframe are not
+    included in the result.
+
+    Parameters
+    ----------
+    left : pandas.DataFrame
+        The left dataframe to join
+    right : pandas.DataFrame
+        The right dataframe to join
+    by: ByKey
+        The columns to join on. Can be a single column name, for mutual column names on both sides,
+        or a tuple of column names, for different column names on each side.
+    """
+
+    return (
+        _join(left.assign(_left=True), right.assign(_right=True), "left", *_get_join_keys(by))
+        .where(lambda x: x._right.isna())
+        .dropna(subset=["_left"])
+        .reindex(columns=left.columns)
+    )
 
 
 def crossing(left: DataFrame, right: DataFrame) -> DataFrame:

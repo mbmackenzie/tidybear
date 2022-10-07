@@ -7,6 +7,7 @@ from tidybear.selectors import last_col
 from tidybear.selectors import matches
 from tidybear.selectors import num_range
 from tidybear.selectors import starts_with
+from tidybear.verbs import anti_join
 from tidybear.verbs import count
 from tidybear.verbs import crossing
 from tidybear.verbs import filter
@@ -51,4 +52,5 @@ __all__ = (
     "ends_with",
     "num_range",
     "filter",
+    "anti_join",
 )
